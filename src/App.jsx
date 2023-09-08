@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 function App() {
 
   const { register, handleSubmit, 
-    formState: { errors } 
+          formState: { errors } 
   } = useForm();
 
   console.log(errors);
@@ -22,45 +22,75 @@ function App() {
       <input 
         type="text" 
         { ...register("nombre", {
-          required: true,
+          required: {
+            value: true,
+            message: "Nombre es requerido"
+          },
+          minLength: {
+            value: 2,
+            message: "Nombre debe tener al menos 2 caracteres"
+          },
+          maxLength: {
+            value: 20,
+            message: "Nombre No debe superar los 20 caracteres"
+          },
         })} 
       />
       {
-        errors.nombre && <span> Nombre es Requerido </span>
+        errors.nombre && <span>{ errors.nombre.message }</span>
       }
-
       {/*Correo*/}
       <label htmlFor="correo">Correo</label>
       <input 
         type="email" 
-        { ...register("email") }
+        { ...register("correo", {
+          required: {
+            value: true,
+            message: "Correo es requerido"
+          },
+          pattern: {
+            value: /^[a-z0-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+            message: "Correo no válido"
+          }
+        })}
       />
+      {
+        errors.correo && <span>{ errors.correo.message }</span>
+      }
 
       {/*Password*/}
       <label htmlFor="password">Password</label>
       <input 
         type="password" 
-        { ...register('paswword') }
+        { ...register('paswword', {
+          required: true,
+        })}
       />
 
       {/*Confirmar Password*/}
       <label htmlFor="confirmarPassword">Confirmar Password</label>
       <input 
         type="password" 
-        { ...register('confirmarPassword') }
+        { ...register('confirmarPassword', {
+          required: true,
+        })}
       />
 
       {/*Fecha de Nacimiento*/}
       <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
       <input 
         type="date" 
-        { ...register('fechaNacimiento') }
+        { ...register('fechaNacimiento', { 
+          required: true,
+        })}
       />
 
       {/*país*/}
       <label htmlFor="pais">País</label>
       <select 
-        { ...register("pais") }
+        { ...register("pais", {
+          required: true,
+        })}
       >
         <option value="mx">México</option>
         <option value="co">Colombia</option>
@@ -72,14 +102,16 @@ function App() {
       <label htmlFor="file">Foto de Perfil</label>
       <input 
         type="file" 
-        { ...register("file") }
+        { ...register("file")}
       />
 
       {/*Terminos*/}
       <label htmlFor="terminos">Acepto términos y condiciones</label>
       <input 
         type="checkbox" 
-        { ...register("terminos") }
+        { ...register("terminos", {
+          required: true,
+        })}
       />
 
       <button type="submit">Enviar</button>
