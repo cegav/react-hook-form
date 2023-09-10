@@ -11,7 +11,7 @@ function App() {
   console.log(errors);
 
   const onSubmit = handleSubmit( (data) => {
-    console.log(data);
+    // console.log(data);
   });
 
   return (
@@ -62,10 +62,16 @@ function App() {
       <label htmlFor="password">Password</label>
       <input 
         type="password" 
-        { ...register('paswword', {
-          required: true,
+        { ...register('password', {
+          required: {
+            value: true,
+            message: "Password es requerido"
+          }
         })}
       />
+      {
+        errors.password && <span>{ errors.password.message }</span>
+      }
 
       {/*Confirmar Password*/}
       <label htmlFor="confirmarPassword">Confirmar Password</label>
@@ -81,9 +87,25 @@ function App() {
       <input 
         type="date" 
         { ...register('fechaNacimiento', { 
-          required: true,
+          required: {
+            value: true,
+            message: "Fecha de Nacimiento es requerido",
+          },
+          validate: (value) => {
+            const fechaNacimiento = new Date(value);
+            const fechaActual = new Date();
+            const edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+
+            console.log(edad);
+
+            return edad >= 18 || "Debe ser mayor de edad";
+          }
         })}
       />
+      {
+        errors.fechaNacimiento && <span>{ errors.fechaNacimiento.message }</span>
+      }
+
 
       {/*país*/}
       <label htmlFor="pais">País</label>
