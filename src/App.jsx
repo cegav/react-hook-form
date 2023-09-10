@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form";
 
 function App() {
 
-  const { register, handleSubmit, 
-          formState: { errors } 
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors },
+    watch,
   } = useForm();
 
   console.log(errors);
@@ -66,6 +69,10 @@ function App() {
           required: {
             value: true,
             message: "Password es requerido"
+          },
+          minLength: {
+            value: 6,
+            message: "El password debe tener al menos 6 cracteres",
           }
         })}
       />
@@ -78,9 +85,18 @@ function App() {
       <input 
         type="password" 
         { ...register('confirmarPassword', {
-          required: true,
-        })}
+          required: {
+            value: true,
+            message: "Confirmar Password es requerido",
+          },
+          validate: (value) => {
+            return value === watch('password') || "Las passwords no coinciden";
+          }
+        })}  
       />
+      {
+        errors.confirmarPassword && <span>{ errors.confirmarPassword.message }</span>
+      }
 
       {/*Fecha de Nacimiento*/}
       <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
@@ -95,7 +111,6 @@ function App() {
             const fechaNacimiento = new Date(value);
             const fechaActual = new Date();
             const edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
-
             console.log(edad);
 
             return edad >= 18 || "Debe ser mayor de edad";
@@ -137,6 +152,10 @@ function App() {
       />
 
       <button type="submit">Enviar</button>
+
+      <pre>
+        {JSON.stringify(watch(), null, 2)}
+      </pre>
 
     </form>
 
