@@ -9,12 +9,19 @@ function App() {
     handleSubmit, 
     formState: { errors },
     watch,
+    setValue,
+    reset,
   } = useForm();
 
   console.log(errors);
 
   const onSubmit = handleSubmit( (data) => {
-    // console.log(data);
+    console.log(data);
+
+    //Aquí iría la petición POST
+    alert("Enviando datos...");
+
+    reset();
   });
 
   return (
@@ -126,20 +133,46 @@ function App() {
       <label htmlFor="pais">País</label>
       <select 
         { ...register("pais", {
-          required: true,
+          required: {
+            value: true,
+            message: "Pais es requerido"
+          },
         })}
       >
+        <option value="">--Elige un país--</option>
         <option value="mx">México</option>
         <option value="co">Colombia</option>
         <option value="ar">Argentina</option>
-        <option value="ch">chile</option>
+        <option value="ch">Chile</option>
       </select>
-
+      {
+        errors.pais && <span>{ errors.pais.message }</span>
+      }
+      {
+        watch('pais') && (
+          <>
+            <input type="text" placeholder="Provincia"
+            {...register('municipio', {
+              required: {
+                value: true,
+                message: 'Municipio es requerido'
+              },
+            })}
+            />
+            {
+              errors.municipio && <span>{ errors.municipio.message }</span>
+            }
+          </>
+        )
+      }
       {/*file*/}      
-      <label htmlFor="file">Foto de Perfil</label>
+      <label htmlFor="foto">Foto de Perfil</label>
       <input 
         type="file" 
-        { ...register("file")}
+        onChange={(e) => {
+          console.log(e.target.files[0])
+          setValue('fotoDelUsuario', e.target.files[0].name)
+        }}
       />
 
       {/*Terminos*/}
@@ -147,9 +180,15 @@ function App() {
       <input 
         type="checkbox" 
         { ...register("terminos", {
-          required: true,
+          required: {
+            value: true,
+            message: "Terminos es requerido",
+          },
         })}
       />
+      {
+        errors.terminos && <span>{ errors.terminos.message }</span>
+      }
 
       <button type="submit">Enviar</button>
 
